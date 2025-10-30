@@ -5,6 +5,8 @@ import java.net.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 // Base UDP server inspired in the blog post: https://www.baeldung.com/udp-in-java
 
@@ -18,6 +20,7 @@ public class Fll extends Thread{
     protected OutputWriter outputWriter;
     protected HashMap<Integer, Integer> hosts;
     protected List<Pair<Integer, Integer>> delivered;
+    private final Object mutex = new Object();
 
     public Fll(int id, int port, InetAddress address, String outputPath, HashMap<Integer, Integer> hosts) {
         try{
@@ -69,8 +72,15 @@ public class Fll extends Thread{
         }
     }
 
-    public void deliver(int sender, int msg){
-        delivered.add(new Pair<>(sender, msg));
+    public int deliver(int sender, int msg){
+        Pair<Integer, Integer> pair = new Pair<>(sender, msg);
+        synchronized (mutex) {
+            if (delivered.contains(pair)) {
+                return -1;
+            }
+            delivered.add(pair);
+            return 0;
+        }
     }
 
     public int getMyId(){

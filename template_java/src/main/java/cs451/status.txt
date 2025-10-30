@@ -1,0 +1,7 @@
+He intentando ussar una estructura de datos que me ha dado chatti para que la concurrencia en hilos sea segura.
+
+No está funcionando correctamente porque el receptor hace deliver cuando no debería.
+
+Tengo que comprobar que deliver realmente se está añadiendo de forma correcta (haciendo print o lo que sea de la estructura)
+
+Sino, implementar locks.

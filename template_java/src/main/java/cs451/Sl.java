@@ -28,8 +28,8 @@ public class Sl extends Fll {
         }, 1000, 5000);
     }
 
-    public void deliver(int sender, int msg) {
-        super.deliver(sender, msg);
+    public int deliver(int sender, int msg) {
+        return super.deliver(sender, msg);
     }
 
     public void send(int receiverPort, int msg) {
@@ -46,16 +46,13 @@ public class Sl extends Fll {
         System.out.println("Resent all messages.");
     }
 
-    public int handleRecieve(DatagramPacket packet){
+    public int handleReceive(DatagramPacket packet){
         int sender = packet.getPort();
         int msg = Integer.parseInt(new String(packet.getData(), 0, packet.getLength()));
+        Pair<Integer, Integer> pair = new Pair<>(sender, msg);
 
-        for(Pair<Integer, Integer> p : delivered){
-            if(p.getKey() == sender && p.getValue() == msg){
-                return -1;
-            }
-        }
-
-        return 0;
+        // add() is atomic — returns false if it already existed
+        boolean firstTime = delivered.add(pair);
+        return firstTime ? 0 : -1;
     }
 }

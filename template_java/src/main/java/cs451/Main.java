@@ -109,6 +109,7 @@ public class Main {
             return;
         } else {
             if (receptor == parser.myId()) {
+                // lanzo receptor
                 Sl recep = new Sl(parser.myId(), port, address, parser.output(), hostsMap);
                     while (true) {
                         DatagramPacket packet = recep.receive();
@@ -118,17 +119,14 @@ public class Main {
                         // Creo thread que hace el handle y el deliver
                         Thread receiverThread = new Thread( () -> {
                             System.out.println("Handling received message!");
-                            int checkDeliver = recep.handleRecieve(packet);
+                            int checkDeliver = recep.deliver(packet.getPort(), receivedMsg);
                             if(checkDeliver == 0) {
                                 System.out.println("Message " + receivedMsg + " has been delivered.");
-                                recep.deliver(packet.getPort(), receivedMsg);
                                 recep.writeReceive(packet.getPort(), receivedMsg);
                             }
                         });
                         receiverThread.start();
                     }
-
-                // lanzo receptor
 
             } else {
                 // lanzo escritor
@@ -136,7 +134,7 @@ public class Main {
                 Sl writer = new Sl(parser.myId(), port, address, parser.output(), hostsMap);
                 System.out.println("Sending messages!");
                 writer.startTimer();
-                for(int msg = 0; msg < num_msg; msg++){
+                for(int msg = 1; msg < num_msg+1; msg++){
                     writer.send(receptorPort, msg);
                     writer.writeSend(msg);
                     writer.deliver(writer.getMyId(), msg);
