@@ -20,8 +20,6 @@ public class Fll extends Thread{
     protected OutputWriter outputWriter;
     protected HashMap<Integer, Integer> hosts;
     protected List<Pair<Integer, Integer>> delivered;
-    private final Object mutex = new Object();
-
     public Fll(int id, int port, InetAddress address, String outputPath, HashMap<Integer, Integer> hosts) {
         try{
             socket = new DatagramSocket(port, address);
@@ -73,14 +71,8 @@ public class Fll extends Thread{
     }
 
     public int deliver(int sender, int msg){
-        Pair<Integer, Integer> pair = new Pair<>(sender, msg);
-        synchronized (mutex) {
-            if (delivered.contains(pair)) {
-                return -1;
-            }
-            delivered.add(pair);
-            return 0;
-        }
+        delivered.add(new Pair<>(sender, msg));
+        return 0;
     }
 
     public int getMyId(){

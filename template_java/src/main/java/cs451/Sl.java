@@ -15,7 +15,6 @@ public class Sl extends Fll {
         super(id, port, address, outputPath, hosts);
         // fll = new Fll(id, port, address, outputPath, hosts);
         sent = new ArrayList<>();
-
     }
 
     public void startTimer(){
@@ -44,15 +43,5 @@ public class Sl extends Fll {
             super.send(receiverPort, msg);
         }
         System.out.println("Resent all messages.");
-    }
-
-    public int handleReceive(DatagramPacket packet){
-        int sender = packet.getPort();
-        int msg = Integer.parseInt(new String(packet.getData(), 0, packet.getLength()));
-        Pair<Integer, Integer> pair = new Pair<>(sender, msg);
-
-        // add() is atomic — returns false if it already existed
-        boolean firstTime = delivered.add(pair);
-        return firstTime ? 0 : -1;
     }
 }

@@ -110,7 +110,7 @@ public class Main {
         } else {
             if (receptor == parser.myId()) {
                 // lanzo receptor
-                Sl recep = new Sl(parser.myId(), port, address, parser.output(), hostsMap);
+                Sl recep = new Pl(parser.myId(), port, address, parser.output(), hostsMap);
                     while (true) {
                         DatagramPacket packet = recep.receive();
                         String received_string = new String(packet.getData(), 0, packet.getLength());
@@ -131,7 +131,7 @@ public class Main {
             } else {
                 // lanzo escritor
                 System.out.println("Creating a writer...");
-                Sl writer = new Sl(parser.myId(), port, address, parser.output(), hostsMap);
+                Sl writer = new Pl(parser.myId(), port, address, parser.output(), hostsMap);
                 System.out.println("Sending messages!");
                 writer.startTimer();
                 for(int msg = 1; msg < num_msg+1; msg++){
