@@ -19,7 +19,7 @@ public class Fll extends Thread{
     protected byte[] buf = new byte[256];
     protected OutputWriter outputWriter;
     protected HashMap<Integer, Integer> hosts;
-    protected List<Pair<Integer, Integer>> delivered;
+    protected Set<Pair<Integer, Integer>> delivered;
     public Fll(int id, int port, InetAddress address, String outputPath, HashMap<Integer, Integer> hosts) {
         try{
             socket = new DatagramSocket(port, address);
@@ -35,7 +35,7 @@ public class Fll extends Thread{
             running = false;
             outputWriter = new OutputWriter(outputPath);
             this.hosts = hosts;
-            delivered = new ArrayList<>();
+            this.delivered = ConcurrentHashMap.newKeySet();
     }
 
     public DatagramPacket receive(){
@@ -58,7 +58,7 @@ public class Fll extends Thread{
     public void send(int receiverPort, int msg){
         buf = Integer.toString(msg).getBytes();
         DatagramPacket packet = new DatagramPacket (buf, buf.length, address, receiverPort);
-        System.out.println("Sending package...");
+        System.out.println("Sending package..." + msg);
         try{
             socket.send(packet);
             System.out.println("Package sent to port!" + receiverPort + "\n");
@@ -70,9 +70,8 @@ public class Fll extends Thread{
         }
     }
 
-    public int deliver(int sender, int msg){
-        delivered.add(new Pair<>(sender, msg));
-        return 0;
+    public boolean deliver(int sender, int msg){
+        return delivered.add(new Pair<>(sender, msg)); //This should be atomic and unique
     }
 
     public int getMyId(){

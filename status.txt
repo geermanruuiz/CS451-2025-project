@@ -1,0 +1,19 @@
+Comprobar que la estructura delivered tiene todos los mensajes porque el timer reenvia los mensajes, o sea que o no los
+trata o ya los ha guardado en delivered y no ha escrito (no probable)?
+
+
+---> he comprobado el tamano y parece ser que hay mensajes que no se deliverean.
+
+La pregunta es, que esta pasando con esos mensajes?
+
+Tras una investigacion:
+
+Muchos mensajes tienen que estar siendo descartados probablemente porque la cola de recepcion del socket se llena.
+
+---> Que hago para arreglar esto
+
+Para esto, lo que puedo hacer es que los mensajes que ya tengan una cierta longevidad no se envien mas, reduciendo asi
+el numero de mensajes a enviar y maximizar las posibildiades de que los otros mensajes no se queden fuera
+
+// TODO:
+Además, la implementacion incumple la limitacion de 8 threads por proceso, MODIFICAR
